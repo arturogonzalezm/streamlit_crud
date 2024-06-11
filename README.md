@@ -24,6 +24,40 @@ streamlit_crud/
 │ └── test_sql_statements.py
 ```
 
+## Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant StreamlitApp
+    participant DataOperations
+    participant SQLStatements
+    participant SnowflakeConnection
+
+    User->>StreamlitApp: Select Table
+    StreamlitApp->>DataOperations: get_tables()
+    DataOperations->>SnowflakeConnection: session
+    SnowflakeConnection-->>DataOperations: return session
+    DataOperations-->>StreamlitApp: return tables
+
+    User->>StreamlitApp: Edit Data
+    StreamlitApp->>DataOperations: get_dataset(tabname)
+    DataOperations->>SnowflakeConnection: session
+    SnowflakeConnection-->>DataOperations: return session
+    DataOperations-->>StreamlitApp: return dataset
+
+    User->>StreamlitApp: Submit Changes
+    StreamlitApp->>SQLStatements: process_cols(edited_rows)
+    StreamlitApp->>SQLStatements: select_cols(dataset, idx)
+    StreamlitApp->>SQLStatements: insert_cols(added_rows, tabname)
+    StreamlitApp->>SQLStatements: delete_cols(idx, dataset, tabname)
+    SQLStatements-->>StreamlitApp: return SQL statements
+
+    StreamlitApp->>SnowflakeConnection: Execute SQL Statements
+    SnowflakeConnection-->>StreamlitApp: return execution result
+
+    StreamlitApp->>User: Display Success/Error Message
+```
 
 ### Files Description
 
@@ -58,6 +92,32 @@ pytest
 ```
 
 This will run all the tests in the `tests/` directory and display the results in the terminal.
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class SnowflakeConnection {
+        -session: Session
+        +session: Session
+        +_create_session(): Session
+    }
+
+    class data_operations {
+        +get_dataset(table_name: str): DataFrame
+        +get_tables(): DataFrame
+    }
+
+    class sql_statements {
+        +process_cols(columns: dict): str
+        +select_cols(df: DataFrame, idx: int): str
+        +insert_cols(cols: dict, tabname: str): str
+        +delete_cols(idx: int, df: DataFrame, tabname: str): str
+    }
+
+    SnowflakeConnection --> data_operations : Uses
+    SnowflakeConnection --> sql_statements : Uses
+```
 
 ## License
 
