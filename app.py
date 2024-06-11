@@ -1,3 +1,7 @@
+"""
+This is the main script for the Streamlit app. It allows users to select a table from a Snowflake database and edit the
+"""
+
 import streamlit as st
 from backend.data_operations import get_tables, get_dataset
 from backend.snowflake_connection import SnowflakeConnection
