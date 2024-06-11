@@ -9,7 +9,7 @@ This project is a Streamlit application for editing Snowflake tables. The applic
 ## Project Structure
 
 ```python
-update_snowflake_tables_from_streamlit/
+streamlit_crud/
 │
 ├── app.py
 ├── backend/
